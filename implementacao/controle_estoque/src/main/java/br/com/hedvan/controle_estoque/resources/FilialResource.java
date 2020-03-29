@@ -18,10 +18,19 @@ public class FilialResource {
 	private FilialService filialService;
 
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
-	public ResponseEntity<?> list(@PathVariable Integer id) {
+	public ResponseEntity<?> findById(@PathVariable Integer id) {
 		Filial obj = filialService.findById(id);
 		if (obj != null)
 			return ResponseEntity.ok(obj);
+		else
+			return ResponseEntity.notFound().build();
+	}
+	
+	@RequestMapping(value="/{id}/produtos",method=RequestMethod.GET)
+	public ResponseEntity<?> listProducts(@PathVariable Integer id) {
+		Filial obj = filialService.findById(id);
+		if (obj != null)
+			return ResponseEntity.ok(obj.getProdutos());
 		else
 			return ResponseEntity.notFound().build();
 	}
@@ -30,5 +39,6 @@ public class FilialResource {
 	public ResponseEntity<?> list() {
 		return ResponseEntity.ok(filialService.findAll());
 	}
+	
 	
 }

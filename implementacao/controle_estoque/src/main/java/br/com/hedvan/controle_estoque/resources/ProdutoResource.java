@@ -18,7 +18,7 @@ public class ProdutoResource {
 	private ProdutoService produtoService;
 
 	@RequestMapping(value="/{id}",method=RequestMethod.GET)
-	public ResponseEntity<?> findByFilial(@PathVariable Integer id) {
+	public ResponseEntity<?> findById(@PathVariable Integer id) {
 		Produto obj = produtoService.findById(id);
 		if (obj != null)
 			return ResponseEntity.ok(obj);
