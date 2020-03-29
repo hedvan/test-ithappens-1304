@@ -1,15 +1,19 @@
 package br.com.hedvan.controle_estoque.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-@Entity
+@Entity(name="Filial")
 @Table(name="tab_filial")
 public class Filial implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -25,6 +29,13 @@ public class Filial implements Serializable{
 	@Column(name="tfi_endereco")
 	private String endereco;
 	
+	@OneToMany(
+			mappedBy = "filial",
+	        cascade = CascadeType.ALL,
+	        orphanRemoval = true
+	    )
+	private List<Produto> produtos = new ArrayList<>();
+
 	public Filial() {
 		
 	}
@@ -34,6 +45,14 @@ public class Filial implements Serializable{
 		this.id = id;
 		this.nome = nome;
 		this.endereco = endereco;
+	}
+	
+	public List<Produto> getProdutos() {
+		return produtos;
+	}
+
+	public void setProdutos(List<Produto> produtos) {
+		this.produtos = produtos;
 	}
 
 	public Integer getId() {
@@ -59,6 +78,16 @@ public class Filial implements Serializable{
 	public void setEndereco(String endereco) {
 		this.endereco = endereco;
 	}
+	
+	public void addProduto(Produto produto) {
+        produtos.add(produto);
+        produto.setFilial(this);
+    }
+ 
+    public void removeComment(Produto produto) {
+        produtos.remove(produto);
+        produto.setFilial(null);
+    }
 
 	@Override
 	public int hashCode() {
