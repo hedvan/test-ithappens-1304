@@ -1,4 +1,4 @@
-package br.com.hedvancontrole_estoque;
+package br.com.hedvan.controle_estoque;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
