@@ -2,12 +2,16 @@ package br.com.hedvan.controle_estoque.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -41,6 +45,13 @@ public class Pedido implements Serializable {
 	@Column(name="tpd_hora_fechada")
 	private Date horaFechada;
 	
+	@OneToMany(
+	        mappedBy = "produto",
+	        cascade = CascadeType.ALL,
+	        orphanRemoval = true
+	    )
+	private List<PedidoProduto> produtos;
+	
 	public Pedido() {
 		
 	}
@@ -57,6 +68,24 @@ public class Pedido implements Serializable {
 		this.horaAberto = horaAberto;
 		this.horaFechada = horaFechada;
 	}
+	
+	public void addProduto(Produto produto) {
+		PedidoProduto pedidoProduto = new PedidoProduto(this, produto, StatusPedidoProduto.ATIVO.getStatus());
+        produtos.add(pedidoProduto);
+        produto.getPedidos().add(pedidoProduto);
+    }
+ 
+    public void cancelaProduto(Produto produto) {
+        for (Iterator<PedidoProduto> iterator = produtos.iterator();
+             iterator.hasNext(); ) {
+            PedidoProduto pedidoProduto = iterator.next();
+ 
+            if (pedidoProduto.getPedido().equals(this) &&
+                    pedidoProduto.getProduto().equals(produto)) {
+                pedidoProduto.setStatusPedidoProduto(StatusPedidoProduto.CANCELADO.getStatus());
+            }
+        }
+    }
 
 	public Integer getId() {
 		return id;
@@ -145,6 +174,14 @@ public class Pedido implements Serializable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	public List<PedidoProduto> getProdutos() {
+		return produtos;
+	}
+
+	public void setProdutos(List<PedidoProduto> produtos) {
+		this.produtos = produtos;
 	}
 	
 }
